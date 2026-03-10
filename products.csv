@@ -1,0 +1,51 @@
+ProductID,ProductName,Category,Price,Stock
+PROD2000,Product_0,Home Appliances,33942.71,410
+PROD2001,Product_1,Electronics,1026.07,137
+PROD2002,Product_2,Sports,25702.23,42
+PROD2003,Product_3,Electronics,11479.49,185
+PROD2004,Product_4,Home Appliances,32329.6,469
+PROD2005,Product_5,Clothing,8883.45,452
+PROD2006,Product_6,Books,34608.7,380
+PROD2007,Product_7,Home Appliances,19459.42,479
+PROD2008,Product_8,Electronics,46849.15,384
+PROD2009,Product_9,Books,7048.54,31
+PROD2010,Product_10,Electronics,17185.1,247
+PROD2011,Product_11,Electronics,5850.98,167
+PROD2012,Product_12,Clothing,46249.74,47
+PROD2013,Product_13,Books,43891.5,239
+PROD2014,Product_14,Books,13045.49,374
+PROD2015,Product_15,Clothing,33067.21,60
+PROD2016,Product_16,Home Appliances,40897.67,447
+PROD2017,Product_17,Electronics,27849.0,273
+PROD2018,Product_18,Sports,26576.6,292
+PROD2019,Product_19,Electronics,12244.24,36
+PROD2020,Product_20,Electronics,4836.52,235
+PROD2021,Product_21,Home Appliances,44881.34,286
+PROD2022,Product_22,Electronics,45040.82,295
+PROD2023,Product_23,Clothing,31728.45,106
+PROD2024,Product_24,Clothing,17083.68,293
+PROD2025,Product_25,Books,17590.64,376
+PROD2026,Product_26,Sports,36352.59,457
+PROD2027,Product_27,Electronics,44876.09,490
+PROD2028,Product_28,Electronics,44376.9,462
+PROD2029,Product_29,Home Appliances,39037.8,326
+PROD2030,Product_30,Clothing,32173.18,313
+PROD2031,Product_31,Sports,4390.17,156
+PROD2032,Product_32,Books,8249.11,13
+PROD2033,Product_33,Clothing,44948.0,44
+PROD2034,Product_34,Books,30400.17,201
+PROD2035,Product_35,Home Appliances,658.01,58
+PROD2036,Product_36,Home Appliances,5253.28,26
+PROD2037,Product_37,Electronics,33242.39,181
+PROD2038,Product_38,Sports,452.07,229
+PROD2039,Product_39,Books,8208.24,167
+PROD2040,Product_40,Clothing,27526.94,486
+PROD2041,Product_41,Home Appliances,34656.38,55
+PROD2042,Product_42,Electronics,32667.67,382
+PROD2043,Product_43,Electronics,11368.61,15
+PROD2044,Product_44,Books,35666.53,108
+PROD2045,Product_45,Home Appliances,12015.0,389
+PROD2046,Product_46,Sports,16404.9,242
+PROD2047,Product_47,Home Appliances,37375.27,46
+PROD2048,Product_48,Books,32551.72,289
+PROD2049,Product_49,Books,42491.33,358
