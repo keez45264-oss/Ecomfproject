@@ -126,36 +126,6 @@ plt.ylabel("Average Revenue")
 plt.title("Average Monthly Revenue (Seasonality Pattern)")
 st.pyplot(fig3)
 
-# --- Decomposition Chart with Toggle + Summary ---
-st.subheader("🔎 Trend, Seasonality & Residuals")
-monthly_total = data.groupby(data["OrderDate"].dt.to_period("M"))["Revenue"].sum()
-monthly_total.index = monthly_total.index.to_timestamp()
-
-decomp_type = st.radio("Select decomposition model:", ["additive", "multiplicative"])
-
-if len(monthly_total) > 24:  # need at least 2 years of data
-    decomposition = seasonal_decompose(monthly_total, model=decomp_type, period=12)
-    fig4 = decomposition.plot()
-    fig4.set_size_inches(10, 8)
-    st.pyplot(fig4)
-
-    # --- Quick Summary Table ---
-    st.subheader("📌 Decomposition Summary")
-    trend_growth = decomposition.trend.dropna().mean()
-    strongest_season = decomposition.seasonal.groupby(decomposition.seasonal.index.month).mean().idxmax()
-    residual_var = decomposition.resid.dropna().var()
-
-    summary_df = pd.DataFrame({
-        "Metric": ["Avg Trend Growth", "Strongest Seasonal Month", "Residual Variance"],
-        "Value": [f"{trend_growth:,.2f}", strongest_season, f"{residual_var:,.2f}"]
-    })
-    st.table(summary_df)
-
-else:
-    st.warning("Not enough data points for decomposition (need at least 2 years).")
-
-st.info("This decomposition chart separates long-term trend, recurring seasonality, and random residuals.")
-
 # --- Business Insight ---
 st.subheader("💡 Business Insight")
 st.markdown(f"""
