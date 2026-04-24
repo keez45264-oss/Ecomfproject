@@ -8,10 +8,6 @@ from statsmodels.tsa.seasonal import seasonal_decompose
 
 st.title("📈 Future Sales Prediction")
 
-# --- Executive Summary Panel ---
-st.subheader("📰 Executive Summary")
-summary_placeholder = st.empty()  # will fill after KPI calculation
-
 st.markdown("""
 This module analyzes past sales data and predicts future sales trends.
 
@@ -52,6 +48,12 @@ for cat in selected_categories:
         model_fit = model.fit()
         forecast = model_fit.forecast(steps=forecast_horizon)
         
+        # --- FIX: assign proper future date index ---
+        last_date = monthly.index[-1]
+        future_dates = pd.date_range(last_date + pd.offsets.MonthBegin(),
+                                     periods=forecast_horizon, freq='M')
+        forecast.index = future_dates
+        
         combined = pd.concat([monthly, forecast])
         comparison_df[cat] = combined
         
@@ -63,31 +65,21 @@ for cat in selected_categories:
         
         kpi_data.append({
             "Category": cat,
-            "Total Revenue": f"{total_rev:,.0f}",
-            "Avg Monthly": f"{avg_rev:,.0f}",
+            "Total Revenue": total_rev,
+            "Avg Monthly": avg_rev,
             "Best Month": best_month,
-            "Predicted Growth": f"{growth:.2f}%"
+            "Predicted Growth": growth
         })
-
-# --- Executive Summary Text ---
-if kpi_data:
-    summary_lines = []
-    for kpi in kpi_data:
-        growth_val = float(kpi["Predicted Growth"].replace("%",""))
-        if growth_val > 0:
-            summary_lines.append(f"**{kpi['Category']}** is projected to grow (+{kpi['Predicted Growth']}).")
-        elif growth_val < 0:
-            summary_lines.append(f"**{kpi['Category']}** is projected to decline ({kpi['Predicted Growth']}).")
-        else:
-            summary_lines.append(f"**{kpi['Category']}** is flat ({kpi['Predicted Growth']}).")
-    summary_placeholder.markdown(" • ".join(summary_lines))
 
 # --- Comparison Chart ---
 st.subheader("📊 Multi-Category Sales Comparison")
 if not comparison_df.empty:
     fig, ax = plt.subplots()
     for cat in comparison_df.columns:
-        comparison_df[cat].plot(ax=ax, label=cat)
+        monthly = comparison_df[cat].iloc[:-forecast_horizon]
+        forecast = comparison_df[cat].iloc[-forecast_horizon:]
+        monthly.plot(ax=ax, label=f"{cat} Actual")
+        forecast.plot(ax=ax, label=f"{cat} Forecast", linestyle="--")
     plt.legend()
     plt.ylabel("Revenue")
     plt.title(f"Sales Forecast Comparison ({forecast_horizon}-Month Horizon)")
@@ -97,14 +89,13 @@ else:
 
 # --- KPI Cards per Category ---
 st.subheader("📌 Category Performance KPIs")
-if kpi_data:
-    for kpi in kpi_data:
-        st.markdown(f"### {kpi['Category']}")
-        col1, col2, col3, col4 = st.columns(4)
-        col1.metric("Total Revenue", kpi["Total Revenue"])
-        col2.metric("Avg Monthly", kpi["Avg Monthly"])
-        col3.metric("Best Month", kpi["Best Month"])
-        col4.metric("Predicted Growth", kpi["Predicted Growth"])
+for kpi in kpi_data:
+    st.markdown(f"### {kpi['Category']}")
+    col1, col2, col3, col4 = st.columns(4)
+    col1.metric("Total Revenue", f"{kpi['Total Revenue']:,.0f}")
+    col2.metric("Avg Monthly", f"{kpi['Avg Monthly']:,.0f}")
+    col3.metric("Best Month", kpi["Best Month"])
+    col4.metric("Predicted Growth", f"{kpi['Predicted Growth']:.2f}%")
 
 # --- Download KPI Summary ---
 if kpi_data:
@@ -119,9 +110,7 @@ if kpi_data:
 
     # --- Heatmap Visualization ---
     st.subheader("🔥 Category Growth Heatmap")
-    # Clean '%' before converting to float
-    kpi_df["Predicted Growth (Numeric)"] = kpi_df["Predicted Growth"].str.replace('%','').astype(float)
-    heatmap_data = kpi_df.set_index("Category")[["Predicted Growth (Numeric)"]]
+    heatmap_data = kpi_df.set_index("Category")[["Predicted Growth"]]
     fig, ax = plt.subplots(figsize=(6,4))
     sns.heatmap(heatmap_data, annot=True, cmap="RdYlGn", center=0, fmt=".2f", ax=ax)
     plt.title(f"Predicted Growth Rates by Category ({forecast_horizon}-Month Horizon)")
@@ -162,32 +151,18 @@ if len(monthly_total) > 24:  # need at least 2 years of data
     })
     st.table(summary_df)
 
-    # --- Download Decomposition Summary ---
-    csv_decomp = summary_df.to_csv(index=False).encode("utf-8")
-    st.download_button(
-        label="⬇️ Download Decomposition Summary as CSV",
-        data=csv_decomp,
-        file_name="decomposition_summary.csv",
-        mime="text/csv"
-    )
-
 else:
-    st.warning("Not enough data points for decomposition (need at least 2 years). Showing moving average trend instead.")
-    fig5, ax5 = plt.subplots()
-    monthly_total.rolling(window=6).mean().plot(ax=ax5, color="green")
-    plt.title("6-Month Moving Average Trend (Fallback)")
-    plt.ylabel("Revenue")
-    st.pyplot(fig5)
+    st.warning("Not enough data points for decomposition (need at least 2 years).")
 
 st.info("This decomposition chart separates long-term trend, recurring seasonality, and random residuals.")
 
 # --- Business Insight ---
 st.subheader("💡 Business Insight")
-for kpi in kpi_data:
-    growth_val = float(kpi["Predicted Growth"].replace("%",""))
-    if growth_val > 0:
-        st.success(f"{kpi['Category']} shows positive growth — increase inventory and marketing.")
-    elif growth_val < 0:
-        st.warning(f"{kpi['Category']} shows decline — run promotions and manage stock carefully.")
-    else:
-        st.info(f"{kpi['Category']} is flat — maintain current strategy but monitor closely.")
+st.markdown(f"""
+- **Category Prioritization**: Compare growth trends across categories to decide where to allocate inventory and marketing spend.  
+- **Risk Management**: Identify categories with declining forecasts and plan promotions.  
+- **Strategic Planning**: Focus on categories with strong growth potential for expansion.  
+- **Forecast Horizon Advantage**: Adjust between short-term ({forecast_horizon} months) and long-term planning to align with business cycles.  
+- **Seasonality Detection**: Peaks in certain months indicate recurring demand cycles — plan campaigns and stock accordingly.  
+- **Decomposition Insight**: Trend shows long-term growth, seasonality highlights recurring cycles, residuals capture unexpected fluctuations.  
+""")
