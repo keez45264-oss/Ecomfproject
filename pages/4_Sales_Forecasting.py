@@ -51,7 +51,8 @@ for cat in selected_categories:
         # --- FIX: assign proper future date index ---
         last_date = monthly.index[-1]
         future_dates = pd.date_range(last_date + pd.offsets.MonthBegin(),
-                                     periods=forecast_horizon, freq='M')
+                             periods=forecast_horizon, freq='M')
+
         forecast.index = future_dates
         
         combined = pd.concat([monthly, forecast])
