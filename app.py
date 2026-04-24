@@ -1,9 +1,9 @@
 import streamlit as st
 
-st.set_page_config(page_title="AI-Powered E-Commerce Analytics", layout="wide")
+st.set_page_config(page_title="E-Commerce Sales Forecasting", layout="wide")
 
 # Title & Subtitle
-st.title("🛒 AI-Powered E-Commerce Analytics")
+st.title("🛒 E-Commerce Sales Forecasting")
 st.markdown("### Forecasting • Segmentation • Demand Prediction")
 
 # Project Modules
